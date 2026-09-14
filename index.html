@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Traductor ASL - Inicio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .hero-container {
+      width: 100%;
+      max-width: 900px;
+      margin-top: 4rem;
+      text-align: center;
+      padding: 0 1.5rem;
+    }
+    .hero-title { font-size: 3rem; font-weight: 700; color: #6366f1; margin-bottom: 0.5rem; }
+    .hero-subtitle { font-size: 1.1rem; color: #64748b; margin-bottom: 3rem; }
+    .nav-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; width: 100%; }
+    .nav-card {
+      background: white; border: 2px solid #e2e8f0; border-radius: 24px;
+      padding: 3.5rem 2rem; text-decoration: none; color: #0f172a; text-align: center;
+      transition: all 0.3s ease; box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+    }
+    .nav-card:hover {
+      border-color: #6366f1; transform: translateY(-5px);
+      box-shadow: 0 20px 40px rgba(99, 102, 241, 0.12);
+    }
+    .nav-icon { font-size: 3.5rem; margin-bottom: 1rem; }
+    .nav-card h3 { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .nav-card p { color: #64748b; font-size: 0.95rem; }
+  </style>
+</head>
+<body>
+  <div class="hero-container">
+    <h1 class="hero-title">🤟 Traductor ASL</h1>
+    <p class="hero-subtitle">Plataforma de interpretación interactiva de Lengua de Señas en tiempo real</p>
+    
+    <div class="nav-grid">
+      <a href="abecedario.html" class="nav-card">
+        <div class="nav-icon">🔤</div>
+        <h3>Abecedario (A-Z)</h3>
+        <p>Reconocimiento letra por letra y traductor de voz para oyentes</p>
+      </a>
+      <a href="frases.html" class="nav-card">
+        <div class="nav-icon">💬</div>
+        <h3>Frases</h3>
+        <p>Interpretación fluida de señas dinámicas complejas</p>
+      </a>
+    </div>
+  </div>
+</body>
+</html>

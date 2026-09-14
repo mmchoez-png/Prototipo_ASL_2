@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ASL - Frases</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+</head>
+<body>
+<header>
+    <div class="brand-title">💬 Módulo de Frases</div>
+    <a href="index.html" class="back-btn">← Volver al Inicio</a>
+</header>
+
+<main class="dashboard-container">
+    <!-- COLUMNA IZQUIERDA: TRADUCCIÓN DE SEÑAS A TEXTO/VOZ -->
+    <div class="card">
+        <div class="section-title">📹 Reconocimiento de Frases en Señas</div>
+        <div class="video-wrapper">
+            <button class="btn-action" onclick="toggleCamera()"
+                style="position: absolute; top: 10px; right: 10px; z-index: 20; background: rgba(15, 23, 42, 0.75); color: white; border: none; padding: 0.5rem 0.8rem; border-radius: 8px; font-size: 0.8rem;">
+                🔄 Cambiar Cámara
+            </button>
+            <video id="webcam" autoplay playsinline muted></video>
+            <canvas id="output_canvas" width="640" height="480"></canvas>
+        </div>
+
+        <div class="prediction-badge">
+        <div class="predicted-text" id="output-class">Cargando modelo...</div>
+        <div class="confidence-text" id="output-confidence">Confianza: --</div>
+      </div>
+    </div>
+
+    <!-- COLUMNA DERECHA: TRADUCCIÓN INVERSA (VOZ DEL OYENTE A PANTALLA) -->
+    <div class="card" style="justify-content: space-between;">
+      <div>
+        <div class="section-title">🎙️ Micrófono del Oyente (Voz ➔ Texto)</div>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.4rem; margin-bottom: 1.2rem;">
+          La persona oyente habla por aquí para que la persona sorda lea el mensaje en pantalla.
+        </p>
+        
+        <div class="stt-box" id="speech-output">Presiona "Hablar (Oyente)" para escuchar...</div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 0.8rem;">
+        <button class="btn-mic" id="mic-btn" onclick="toggleMic()">
+          <span id="mic-icon">🎙️</span>
+          <span id="mic-text">Hablar (Oyente)</span>
+        </button>
+        
+        <button class="btn-action" onclick="limpiarVozOyente()">🗑️ Limpiar Mensaje</button>
+      </div>
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', () => initModulo('frases'));
+  </script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ASL - Abecedario</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+</head>
+<body>
+  <header>
+    <div class="brand-title">🔤 Módulo de Abecedario</div>
+    <a href="index.html" class="back-btn">← Volver al Inicio</a>
+  </header>
+
+  <main class="dashboard-container">
+    <!-- COLUMNA IZQUIERDA: CÁMARA Y RECONOCIMIENTO DE LETRA -->
+    <div class="card">
+      <div class="section-title">📹 Reconocimiento de Letras</div>
+      <div class="video-wrapper">
+        <video id="webcam" autoplay playsinline muted></video>
+        <canvas id="output_canvas" width="640" height="480"></canvas>
+      </div>
+
+      <div class="prediction-badge">
+        <div class="predicted-text" id="output-class">Cargando modelo...</div>
+        <div class="confidence-text" id="output-confidence">Confianza: --</div>
+      </div>
+    </div>
+
+    <!-- COLUMNA DERECHA: CONSTRUCTOR DE PALABRAS / ORACIONES -->
+    <div class="card">
+      <div class="section-title">📝 Texto Construido por Deletreo</div>
+      <div class="sentence-box" id="sentence-display">...</div>
+      
+      <div class="action-grid">
+        <button class="btn-action" onclick="agregarEspacio()">➕ Espacio</button>
+        <button class="btn-action" onclick="borrarPalabra()">⌫ Borrar Palabra</button>
+        <button class="btn-action btn-danger" onclick="limpiarTexto()">🗑️ Limpiar Todo</button>
+        <button class="btn-action btn-primary" onclick="leerOracion()">🔊 Leer Oración</button>
+      </div>
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', () => initModulo('abecedario'));
+  </script>
+</body>
+</html>
