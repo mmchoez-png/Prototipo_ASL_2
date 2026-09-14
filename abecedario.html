@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ASL - Alphabet Module</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+</head>
+<body>
+  <main class="main-container">
+    <header class="header">
+      <a href="index.html" class="back-link">← Back to Home</a>
+      <h1>🔤 Alphabet (A-Z)</h1>
+      <p>Spell word-by-word with high-accuracy finger tracking</p>
+    </header>
+
+    <div class="video-wrapper">
+      <button class="btn-action btn-cam" onclick="toggleCamera()">🔄 Switch Camera</button>
+      <video id="webcam" autoplay playsinline muted></video>
+      <canvas id="output_canvas" width="640" height="480"></canvas>
+    </div>
+
+    <div class="status-box">
+      <div id="output-class" class="detected-class">Ready for signs 👋</div>
+      <div id="output-confidence" class="confidence-tag">Confidence: --</div>
+    </div>
+
+    <!-- Sentence Builder Section -->
+    <section class="section-container">
+      <h3>Built Text (Fingerspelling):</h3>
+      <div id="sentence-display" class="sentence-box">...</div>
+      <div class="button-group">
+        <button class="btn-action" onclick="agregarEspacio()">Space</button>
+        <button class="btn-action" onclick="borrarPalabra()">Delete Word</button>
+        <button class="btn-action" onclick="limpiarTexto()">Clear All</button>
+        <button class="btn-action btn-primary" onclick="leerOracion()">🔊 Read Sentence</button>
+      </div>
+    </section>
+
+    <!-- ASL Quick Reference Guide -->
+    <section class="section-container">
+      <h3>💡 Tips for Fingerspelling</h3>
+      <p style="font-size: 0.85rem; color: #64748b; line-height: 1.4;">
+        Hold your hand steady near chest level. Use <strong>Space</strong> between words to allow the text-to-speech engine to read full words naturally.
+      </p>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', () => initModulo('abecedario'));
+  </script>
+</body>
+</html>
