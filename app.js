@@ -3,23 +3,23 @@ let modoActual = 'abecedario';
 let frameBuffer = [];
 const FRAMES_TARGET = 60;
 
-// CONTROL DE CÁMARA FRONTAL / TRASERA
-let currentFacingMode = 'user'; // 'user' (frontal) o 'environment' (trasera)
+// CAMERA SWITCH CONTROL
+let currentFacingMode = 'user'; // 'user' (front) or 'environment' (back)
 let cameraInstance = null;
 let handsInstance = null;
 
-// CERROJOS Y TEXTO DE ABECEDARIO
+// ALPHABET LOCKS & TEXT
 let letraRegistradaActual = "";
 let sentenceText = "";
 let letraCandidata = "";
 let contadorEstabilidad = 0;
 const FRAMES_REQUERIDOS_ABC = 8; 
 
-// CERROJO Y COOLDOWN DE FRASES
+// PHRASES LOCK & COOLDOWN
 let fraseRegistradaActual = "";
 let cooldownFrase = false;
 
-// RECONOCIMIENTO DE VOZ (MICRÓFONO OYENTE)
+// SPEECH RECOGNITION (LISTENER MIC)
 let recognition = null;
 let isListening = false;
 
@@ -28,7 +28,7 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
   recognition = new SpeechRecognition();
   recognition.continuous = true;
   recognition.interimResults = true;
-  recognition.lang = 'es-ES';
+  recognition.lang = 'en-US'; // SET TO ENGLISH
 
   recognition.onresult = (event) => {
     let transcript = '';
@@ -44,7 +44,7 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
 }
 
 function toggleMic() {
-  if (!recognition) return alert("Tu navegador no admite reconocimiento de voz.");
+  if (!recognition) return alert("Your browser does not support speech recognition.");
   const btn = document.getElementById('mic-btn');
   const txt = document.getElementById('mic-text');
 
@@ -56,7 +56,7 @@ function toggleMic() {
     recognition.start();
     isListening = true;
     if (btn) btn.classList.add('recording');
-    if (txt) txt.textContent = "Escuchando...";
+    if (txt) txt.textContent = "Listening...";
   }
 }
 
@@ -64,19 +64,18 @@ function stopMicUI() {
   const btn = document.getElementById('mic-btn');
   const txt = document.getElementById('mic-text');
   if (btn) btn.classList.remove('recording');
-  if (txt) txt.textContent = "Hablar (Oyente)";
+  if (txt) txt.textContent = "Speak (Listener)";
 }
 
 function limpiarVozOyente() {
   const sttBox = document.getElementById('speech-output');
-  if (sttBox) sttBox.textContent = "Presiona \"Hablar (Oyente)\" para escuchar...";
+  if (sttBox) sttBox.textContent = "Press \"Speak (Listener)\" to listen...";
 }
 
-// CAMBIO DINÁMICO DE CÁMARA (FRONTAL / TRASERA)
+// TOGGLE FRONT / BACK CAMERA
 async function toggleCamera() {
   currentFacingMode = (currentFacingMode === 'user') ? 'environment' : 'user';
   
-  // Invertir o quitar el espejo según la cámara
   const canvas = document.getElementById('output_canvas');
   if (canvas) {
     canvas.style.transform = (currentFacingMode === 'user') ? 'scaleX(-1)' : 'scaleX(1)';
@@ -96,24 +95,24 @@ async function toggleCamera() {
   cameraInstance.start();
 }
 
-// CARGA DE MODELO
+// LOAD JSON MODELS
 async function cargarModeloAuto(modo) {
   const ruta = modo === 'abecedario' ? './modelo_abecedario.json' : './modelo_frases.json';
   try {
     const res = await fetch(ruta);
     if (!res.ok) throw new Error(`Status ${res.status}`);
     modeloActivo = await res.json();
-    document.getElementById('output-class').textContent = "Mano lista para señas 👋";
+    document.getElementById('output-class').textContent = "Ready for signs 👋";
   } catch (e) {
-    console.error(`Error al cargar ${ruta}:`, e);
-    document.getElementById('output-class').textContent = `Error al leer ${ruta}`;
+    console.error(`Error loading ${ruta}:`, e);
+    document.getElementById('output-class').textContent = `Error loading ${ruta}`;
   }
 }
 
 function reproducirVoz(texto) {
   window.speechSynthesis.cancel();
   const utterance = new SpeechSynthesisUtterance(texto);
-  utterance.lang = 'en-US';
+  utterance.lang = 'en-US'; // SET TO ENGLISH
   window.speechSynthesis.speak(utterance);
 }
 
@@ -131,15 +130,15 @@ function matMulAdd(input, W, b) {
   return output;
 }
 
-// PREDICCIÓN Y FILTROS
+// PREDICTION ENGINE
 function predict(inputVector, handsInFrame) {
   if (!modeloActivo) return;
 
   const confEl = document.getElementById('output-confidence');
 
   if (!handsInFrame) {
-    document.getElementById('output-class').textContent = "Mano lista para señas 👋";
-    if (!cooldownFrase && confEl) confEl.textContent = "Confianza: --";
+    document.getElementById('output-class').textContent = "Ready for signs 👋";
+    if (!cooldownFrase && confEl) confEl.textContent = "Confidence: --";
     letraRegistradaActual = "";
     fraseRegistradaActual = "";
     letraCandidata = "";
@@ -178,9 +177,9 @@ function predict(inputVector, handsInFrame) {
   const confPercent = Math.round(probs[maxIdx] * 100);
 
   document.getElementById('output-class').textContent = bestClass;
-  if (!cooldownFrase && confEl) confEl.textContent = `Confianza: ${confPercent}%`;
+  if (!cooldownFrase && confEl) confEl.textContent = `Confidence: ${confPercent}%`;
 
-  // MODULO ABECEDARIO
+  // ALPHABET RULE (100% Strict + Stability)
   if (modoActual === 'abecedario') {
     if (confPercent === 100) {
       if (bestClass === letraCandidata) {
@@ -203,7 +202,7 @@ function predict(inputVector, handsInFrame) {
       if (confPercent < 50) letraRegistradaActual = "";
     }
 
-  // MODULO FRASES
+  // PHRASES RULE (Dynamic Threshold + Cooldown Buffer Clear)
   } else {
     const UMBRAL_FRASES = 65;
 
@@ -215,12 +214,12 @@ function predict(inputVector, handsInFrame) {
       cooldownFrase = true;
 
       if (confEl) {
-        confEl.innerHTML = `Confianza: ${confPercent}% <span style="color:#ef4444; font-weight:bold;">⏳ (Listo en 1.8s)</span>`;
+        confEl.innerHTML = `Confidence: ${confPercent}% <span style="color:#ef4444; font-weight:bold;">⏳ (Ready in 1.8s)</span>`;
       }
 
       setTimeout(() => {
         cooldownFrase = false;
-        if (confEl) confEl.textContent = `Confianza: --`;
+        if (confEl) confEl.textContent = `Confidence: --`;
       }, 1800);
     }
   }
@@ -247,7 +246,7 @@ function extractLandmarks(results) {
   return [...mano1, ...mano2];
 }
 
-// BOTONES CONSTRUCTOR
+// CONSTRUCTOR BUTTON ACTIONS
 function agregarEspacio() {
   sentenceText += " ";
   const box = document.getElementById('sentence-display');
@@ -273,7 +272,7 @@ function leerOracion() {
   if (sentenceText.trim()) reproducirVoz(sentenceText);
 }
 
-// INICIALIZACIÓN
+// INITIALIZATION
 function initModulo(tipo) {
   modoActual = tipo;
   cargarModeloAuto(tipo);
